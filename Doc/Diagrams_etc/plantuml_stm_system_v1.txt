@@ -1,0 +1,28 @@
+@startuml
+title System States
+[*] --> Unpowered
+state Unpowered
+state DeepSleep
+state On {
+[*] --> Setup
+  state Setup
+  state Measure
+  state MeasureAndDisplay
+  state Wifi
+  
+  Setup --> Measure : Setup done AND \n deep sleep wake-up
+  Measure --> Wifi : Measuring done
+  Setup --> MeasureAndDisplay: Setup done AND \n user wake-up
+  MeasureAndDisplay --> MeasureAndDisplay: user input AND \n t < tuser
+  Measure --> MeasureAndDisplay : user input
+  Wifi --> MeasureAndDisplay : user input
+  Wifi --> [*] : tranfer completed
+  MeasureAndDisplay --> [*]: no user input \n for t >tuser
+}
+
+Unpowered --> On : power supply on
+On --> Unpowered : Power supply off
+On --> DeepSleep : on cycle completed
+DeepSleep --> On : deep sleep timeout
+
+@enduml
